@@ -45,6 +45,25 @@ function App() {
         standardContractType: '',
         chain: 'zksyncTestnet',
         method: 'isPublic',
+        functionAbi: {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_tokenId",
+              "type": "uint256"
+            }
+          ],
+          "name": "isPublic",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
         parameters: [tokenId],
         returnValueTest: {
           // comparator: '>=',
@@ -67,10 +86,10 @@ function App() {
     let encryptedSymmetricKey;
     encryptedSymmetricKey =
         await litNodeClient.saveEncryptionKey({
-          accessControlConditions: accs,
+          evmContractConditions: accs,
           symmetricKey: symmetricKey,
           authSig: authSig,
-          chain: 'zksync',
+          chain: 'zksyncTestnet',
         });
 
     const encryptedData = base64EncryptedString
