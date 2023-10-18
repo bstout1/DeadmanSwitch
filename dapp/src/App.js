@@ -7,6 +7,7 @@ import { Web3Storage } from 'web3.storage'
 const web3storageApi = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEJBYUVGMTMzNDE4MkUxREM2NWE5ZEM3RmZiNWRiNjU4RjFCQzhEQTciLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjI1MjA5ODI0MjYsIm5hbWUiOiJmaXJzdCJ9.ipQK0dH8leW1j7szpETB_6kFoDZkzP7z4SVyEuNTLt4'
 const dsJSON = require('./DeadmanSwitch.json')
 const dsAbi = dsJSON.abi
+const contractAddress = '0x516dD68E8D85a93A8eE91B0DFEFE21DaE2D1b15A'
 
 function App() {
   const [appName, setAppName] = useState('Deadman Switch');
@@ -40,7 +41,7 @@ function App() {
       });
     const accs = [
       {
-        contractAddress: '0xDEdD2B43d9e116F726aD9b842648eFE3B2EE196f',
+        contractAddress: '0x516dD68E8D85a93A8eE91B0DFEFE21DaE2D1b15A',
         standardContractType: '',
         chain: 'zksyncTestnet',
         method: 'isPublic',
