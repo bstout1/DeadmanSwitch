@@ -22,7 +22,7 @@ contract DeadmanSwitch is ERC721, Ownable {
     mapping(uint256 => uint256) public lastCheckedIn;
     mapping(uint256 => uint256) public tokenTimeout;
 
-    constructor() ERC721("DeadMansSwitch", "DMS") Ownable(msg.sender){}
+    constructor() ERC721("DeadmanSwitch", "DMS") Ownable(msg.sender){}
 
     function mint() public payable {
         require(msg.value >= mintFee, "Not enough Ether provided.");
