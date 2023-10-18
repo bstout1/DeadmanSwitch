@@ -95,6 +95,11 @@ contract DeadmanSwitch is ERC721, Ownable {
         nftInfo.storageLinks.push(link);
     }
 
+    function checkIn(uint256 tokenId) public {
+        require(ownerOf(tokenId) == msg.sender, "Only the owner can check-in");
+        lastCheckedIn[tokenId] = block.timestamp;
+    }
+
     function setAccess(uint256 tokenId, AccessLevel access) public {
         require(tokenId <= tokenCounter, "NFT does not exist");
         require(msg.sender == ownerOf(tokenId), "Only the owner can set access");
