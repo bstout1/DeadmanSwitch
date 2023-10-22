@@ -9,7 +9,8 @@ const hre = require("hardhat");
 async function main() {
   
 
-  const ds = await hre.ethers.deployContract("DeadmanSwitch");
+  const ds = await hre.ethers.deployContract("DeadmanSwitch", [])
+  console.log('Contract deployed to: ', ds.address)
 
  
 }
