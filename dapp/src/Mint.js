@@ -150,6 +150,7 @@ const Mint = () => {
         //now make call to contract
 
         await NFTContract.pushLink(tokenId, linkUrl)
+        setAddingLink(false)
         alert('link submitted successfully')
 
   }
@@ -164,11 +165,13 @@ const Mint = () => {
 
     const makePublic = async (tokenId) => {
         await NFTContract.setAccess(tokenId, 1)
+        setSettingAccess(false)
         alert('Content now public')
     }
 
     const checkIn = async (tokenId) => {
         await NFTContract.checkIn(tokenId)
+        setCheckingIn(false)
         alert('Checked in successfully')
     }
 
@@ -180,6 +183,10 @@ const Mint = () => {
         setCheckingIn(true)
     }
 
+    const setAccessForm = () => {
+        setSettingAccess(true)
+    }
+
     const handleLinkSubmit = (event) => {
         event.preventDefault()
         addLink(tokenId, newText)
@@ -188,6 +195,12 @@ const Mint = () => {
     const handleCheckinSubmit = (event) => {
         event.preventDefault()
         checkIn(tokenId)
+        
+    }
+
+    const handleAccessSubmit = (event) => {
+        event.preventDefault()
+        makePublic(tokenId)
     }
 
 
@@ -201,7 +214,7 @@ const Mint = () => {
                     <button onClick={mintNFT}>Mint NFT</button>
                     <button onClick={addLinkForm}>Add Link</button>
                     <button onClick={checkinForm}>Check In</button>
-                    <button onClick={makePublic}>Make Public</button>
+                    <button onClick={setAccessForm}>Make Public</button>
                     {addingLink && (
                     <form onSubmit={handleLinkSubmit}>
                         <div>
@@ -230,6 +243,26 @@ const Mint = () => {
                   )}
                   {checkingIn && (
                     <form onSubmit={handleCheckinSubmit}>
+                        <div>
+                            <label>
+                            Token ID: 
+                            <input
+                             type="number"
+                             value={tokenId}
+                             onChange={(e) => setTokenId(e.target.value)}
+                             />
+                            </label>
+                        </div>
+                        <div>
+                            
+                        <button type="submit">Submit</button>
+                        </div>
+                    </form>
+
+
+                  )}
+                  {settingAccess && (
+                    <form onSubmit={handleAccessSubmit}>
                         <div>
                             <label>
                             Token ID: 
