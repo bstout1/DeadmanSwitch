@@ -23,7 +23,7 @@ const Mint = () => {
         if (library) {
             const abi = dsAbi
             const zkscontractAddress = '0x516dD68E8D85a93A8eE91B0DFEFE21DaE2D1b15A'
-            const contractAddress = '0x63870f1Fa6549f070d50A67E3E498f9Fef902923'
+            const contractAddress = '0x951B174Dec6C3794015A52067122e424C575de8F'
             setNFTContract(new ethers.Contract(contractAddress, abi, library.getSigner()))
         }
     }, [library])
@@ -57,7 +57,7 @@ const Mint = () => {
           });
         const evmContractConditions = [
           {
-            contractAddress: '0x63870f1Fa6549f070d50A67E3E498f9Fef902923',
+            contractAddress: '0x951B174Dec6C3794015A52067122e424C575de8F',
             chain: 'mantleTestnet',
             functionName: 'isPublic',
             functionAbi: {
@@ -134,7 +134,7 @@ const Mint = () => {
 
     const mintNFT = async () => {
         await NFTContract.mint({
-            value: ethers.utils.parseEther('0.01'),
+            value: ethers.utils.parseEther('20'),
         })
         alert('Successfully minted')
     }

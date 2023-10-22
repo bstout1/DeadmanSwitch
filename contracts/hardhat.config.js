@@ -6,7 +6,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: "0.8.20",
-  defaultNetwork: "mantleTestnet",
+  defaultNetwork: "mantleMainnet",
   networks: {
     mantleTestnet: {
       url: "https://rpc.testnet.mantle.xyz",
@@ -33,7 +33,7 @@ module.exports = {
                 }
             },
             {
-                network: "mantle",
+                network: "mantleMainnet",
                 chainId: 5000,
                 urls: {
                 apiURL: "https://explorer.mantle.xyz/api",

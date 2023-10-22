@@ -18,7 +18,8 @@ const web3storageApi = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXR
 const dsJSON = require('./DeadmanSwitch.json')
 const dsAbi = dsJSON.abi
 const zkscontractAddress = '0x516dD68E8D85a93A8eE91B0DFEFE21DaE2D1b15A'
-const contractAddress = '0x63870f1Fa6549f070d50A67E3E498f9Fef902923'
+const contractAddress = '0x951B174Dec6C3794015A52067122e424C575de8F'
+const mainnetContract = '0xc26DCd478D8Df5293035efC70bAe87f24b04b83B'
 
 
 function getLibrary(provider) {

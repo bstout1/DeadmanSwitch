@@ -24,7 +24,7 @@ const ViewLinks = () => {
     useEffect(() => {
         if (library) {
             const abi = dsAbi
-            const contractAddress = '0x63870f1Fa6549f070d50A67E3E498f9Fef902923'
+            const contractAddress = '0x951B174Dec6C3794015A52067122e424C575de8F'
             setNFTContract(new ethers.Contract(contractAddress, abi, library.getSigner()))
         }
     }, [library])
@@ -58,7 +58,7 @@ const ViewLinks = () => {
           });
         const evmContractConditions = [
           {
-            contractAddress: '0x63870f1Fa6549f070d50A67E3E498f9Fef902923',
+            contractAddress: '0x951B174Dec6C3794015A52067122e424C575de8F',
             chain: 'mantleTestnet',
             functionName: 'isPublic',
             functionAbi: {
@@ -136,7 +136,7 @@ const ViewLinks = () => {
         const _tokenId_ = tokenId.toString()
          const evmContractConditions = [
           {
-            contractAddress: '0x63870f1Fa6549f070d50A67E3E498f9Fef902923',
+            contractAddress: '0x951B174Dec6C3794015A52067122e424C575de8F',
             chain: 'mantleTestnet',
             functionName: 'isPublic',
             functionAbi: {
