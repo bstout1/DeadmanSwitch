@@ -4,6 +4,7 @@ import { ethers } from 'ethers'
 import { useWeb3ReactModal } from '@bitiumagency/web3-react-modal'
 import { Web3Storage } from 'web3.storage'
 import * as LitJsSdk from '@lit-protocol/lit-node-client'
+
 const web3storageApi = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEJBYUVGMTMzNDE4MkUxREM2NWE5ZEM3RmZiNWRiNjU4RjFCQzhEQTciLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjI1MjA5ODI0MjYsIm5hbWUiOiJmaXJzdCJ9.ipQK0dH8leW1j7szpETB_6kFoDZkzP7z4SVyEuNTLt4'
 
 
@@ -18,6 +19,21 @@ const Mint = () => {
     const [NFTContract, setNFTContract] = useState()
     const [dataToEncryptHash, setDataToEncryptHash] = useState("")
     const [ciphertext, setCipherText] = useState("")
+    const [nftBalance, setNFTBalance] = useState("")
+    const [addingLink, setAddingLink] = useState(false)
+    const [tokenId, setTokenId] = useState("")
+    const [newText, setNewText] = useState("")
+
+    const getBalance = async () => {
+            try {
+                const nftBalance = await NFTContract.balanceOf(account)
+                console.log('nft balance: ' + nftBalance)
+                setNFTBalance(nftBalance.toString())
+            } catch(error) {
+                console.error('Error fetching NFT Balance: ' + error)
+            }
+    }
+            
 
     useEffect(() => {
         if (library) {
@@ -25,8 +41,13 @@ const Mint = () => {
             const zkscontractAddress = '0x516dD68E8D85a93A8eE91B0DFEFE21DaE2D1b15A'
             const contractAddress = '0x951B174Dec6C3794015A52067122e424C575de8F'
             setNFTContract(new ethers.Contract(contractAddress, abi, library.getSigner()))
+            if(NFTContract) {
+                getBalance().then(console.log)
+            }
+        
         }
     }, [library])
+
 
     const uploadJSON = async(_json, filename) => {
         const token = web3storageApi
@@ -149,6 +170,15 @@ const Mint = () => {
         alert('Checked in successfully')
     }
 
+    const addLinkForm = () => {
+        setAddingLink(true)
+    }
+
+    const handleLinkSubmit = (event) => {
+        event.preventDefault()
+        addLink(tokenId, newText)
+    }
+
 
     return (
         <div className='container'>
@@ -156,10 +186,37 @@ const Mint = () => {
                 <>
                     <h1>Mint & Manage NFT</h1>
                     <p>Your account: {account}</p>
+                    <p>{nftBalance === 0 ? 'Please Mint Your NFT' : `Your NFT balance: ${nftBalance}` }</p>
                     <button onClick={mintNFT}>Mint NFT</button>
-                    <button onClick={() => addLink('1', 'super secret string')}>Add Link</button>
+                    <button onClick={addLinkForm}>Add Link</button>
                     <button onClick={checkIn}>Check In</button>
                     <button onClick={makePublic}>Make Public</button>
+                    {addingLink && (
+                    <form onSubmit={handleLinkSubmit}>
+                        <div>
+                            <label>
+                            Token ID: 
+                            <input
+                             type="number"
+                             value={tokenId}
+                             onChange={(e) => setTokenId(e.target.value)}
+                             />
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                            Text: 
+                            <textarea
+                             value={newText}
+                             onChange={(e) => setNewText(e.target.value)}
+                             ></textarea>
+                        </label>
+                        <button type="submit">Submit</button>
+                        </div>
+                    </form>
+
+
+                  )}
                 </>
                 :
                 <>
