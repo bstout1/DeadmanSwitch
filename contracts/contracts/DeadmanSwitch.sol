@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract DeadmanSwitch is ERC721, Ownable {
+contract DeadmanSwitch is ERC721URIStorage, Ownable {
     enum AccessLevel { Private, Public, Whitelist }
 
     struct NFTInfo {
@@ -14,7 +14,8 @@ contract DeadmanSwitch is ERC721, Ownable {
     }
 
     uint256 public tokenCounter = 1;
-    uint256 public mintFee = 0.01 ether;
+    string public baseURI = '';
+    uint256 public mintFee = 20 ether; //MNT on Mantle
     uint256 public constant DEFAULT_TIMEOUT = 30 days; // Default timeout
 
 
@@ -25,7 +26,7 @@ contract DeadmanSwitch is ERC721, Ownable {
     constructor() ERC721("DeadmanSwitch", "DMS") Ownable(msg.sender){}
 
     function mint() public payable {
-        require(msg.value >= mintFee, "Not enough Ether provided.");
+        require(msg.value >= mintFee, "Not enough Mantle provided.");
 
 
         _mint(msg.sender, tokenCounter);
@@ -37,6 +38,12 @@ contract DeadmanSwitch is ERC721, Ownable {
         lastCheckedIn[tokenCounter] = block.timestamp;
 
         tokenCounter++;
+    }
+
+    function setTokenURI(uint256 tokenId, string memory _tokenURI) public {
+        require(tokenId <= tokenCounter, "NFT does not exist");
+        require(msg.sender == ownerOf(tokenId), "Only the owner can change token URI");
+        super._setTokenURI(tokenId, _tokenURI);
     }
 
     function withdraw() public onlyOwner {
