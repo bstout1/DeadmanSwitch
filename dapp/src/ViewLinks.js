@@ -12,17 +12,18 @@ const dsAbi = dsJSON.abi
 
 const DummyString = ['Super secret string']
 
-const Mint = () => {
+const ViewLinks = () => {
     const { connect } = useWeb3ReactModal()
     const { active, account, library } = useWeb3React()
     const [NFTContract, setNFTContract] = useState()
     const [dataToEncryptHash, setDataToEncryptHash] = useState("")
-    const [ciphertext, setCipherText] = useState("")
+    const [cipher, setCipher] = useState("")
+    const [links, setLinks] = useState([])
+    const [decryptedData, setDecryptedData] = useState("")
 
     useEffect(() => {
         if (library) {
             const abi = dsAbi
-            const zkscontractAddress = '0x516dD68E8D85a93A8eE91B0DFEFE21DaE2D1b15A'
             const contractAddress = '0x63870f1Fa6549f070d50A67E3E498f9Fef902923'
             setNFTContract(new ethers.Contract(contractAddress, abi, library.getSigner()))
         }
@@ -43,7 +44,7 @@ const Mint = () => {
         return `https://dweb.link/ipfs/${cid}/${filename}`
       }
 
-     const addLink = async(tokenId, string) => {
+     const viewLink = async(tokenId, string) => {
         console.log('add link fired')
 
         const litNodeClient = new LitJsSdk.LitNodeClient({
@@ -130,13 +131,90 @@ const Mint = () => {
         alert('link submitted successfully')
 
   }
+    const decryptContent = async(ciphertext, dataToEncryptHash, tokenId) => {
+        console.log('got to decrypt')
+        const _tokenId_ = tokenId.toString()
+         const evmContractConditions = [
+          {
+            contractAddress: '0x63870f1Fa6549f070d50A67E3E498f9Fef902923',
+            chain: 'mantleTestnet',
+            functionName: 'isPublic',
+            functionAbi: {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "isPublic",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            functionParams: [_tokenId_],
+            returnValueTest: {
+              key: "",
+              comparator: "=",
+              value: 'true',
+            },
+          },
+        ];
+        const litNodeClient = new LitJsSdk.LitNodeClient({
+            litNetwork: 'cayenne',
+          });
 
-
-    const mintNFT = async () => {
-        await NFTContract.mint({
-            value: ethers.utils.parseEther('0.01'),
+        await litNodeClient.connect();
+        let authSig;
+        authSig = await LitJsSdk.checkAndSignAuthMessage({
+            chain: 'mantleTestnet'
+          });
+        LitJsSdk.decryptToString({
+            evmContractConditions,
+            ciphertext: ciphertext,
+            dataToEncryptHash: dataToEncryptHash,
+            authSig,
+            chain: 'mantleTestnet'
+        },
+        litNodeClient
+        )
+        .then(res => {
+            console.log('decryptedData' + res)
+            setDecryptedData(res)
         })
-        alert('Successfully minted')
+        .catch((error) => console.error(error))
+    }
+
+
+    const getLinks = async () => {
+        const links = await NFTContract.viewLinks(1)
+        setLinks(links)
+        const link1 = links[0]
+        await fetch(link1)
+            .then(response => {
+                if(!response.ok) {
+                    throw new Error('Network response was not OK ' + response.statusText)
+                }
+                return response.json()
+            })
+            .then(data => {
+                console.log('cipher: ' + data.ciphertext)
+                setCipher(data.ciphertext)
+                console.log('hash: ' + data.dataToEncryptHash)
+                setDataToEncryptHash(data.dataToEncryptHash)
+                alert(cipher)
+            })
+            .catch(error => console.error(error))
+        
+        console.log('cipher ' + cipher)
+        await decryptContent(cipher, dataToEncryptHash, 1)
+        alert(decryptedData)
     }
 
     const makePublic = async () => {
@@ -154,23 +232,21 @@ const Mint = () => {
         <div className='container'>
             {active ?
                 <>
-                    <h1>Mint & Manage NFT</h1>
-                    <p>Your account: {account}</p>
-                    <button onClick={mintNFT}>Mint NFT</button>
-                    <button onClick={() => addLink('1', 'super secret string')}>Add Link</button>
-                    <button onClick={checkIn}>Check In</button>
-                    <button onClick={makePublic}>Make Public</button>
+                    <h1>View Links</h1>
+                    
+                    <button onClick={getLinks}>View Link</button>
+                    
                 </>
                 :
                 <>
                     <p>
-                        Connect and mint an NFT to gain access to the system.
+                        Connect to view content.
                     </p>
-                    <button onClick={connect}>Connect wallet</button>
+                
                 </>
             }
         </div>
     )
 }
 
-export default Mint
+export default ViewLinks

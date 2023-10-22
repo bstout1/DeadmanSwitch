@@ -10,13 +10,16 @@ import { ethers } from 'ethers'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { Web3ReactModal } from '@bitiumagency/web3-react-modal'
 import Mint from './Mint'
+import ViewLinks from './ViewLinks'
 
 
 
 const web3storageApi = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEJBYUVGMTMzNDE4MkUxREM2NWE5ZEM3RmZiNWRiNjU4RjFCQzhEQTciLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjI1MjA5ODI0MjYsIm5hbWUiOiJmaXJzdCJ9.ipQK0dH8leW1j7szpETB_6kFoDZkzP7z4SVyEuNTLt4'
 const dsJSON = require('./DeadmanSwitch.json')
 const dsAbi = dsJSON.abi
-const contractAddress = '0x516dD68E8D85a93A8eE91B0DFEFE21DaE2D1b15A'
+const zkscontractAddress = '0x516dD68E8D85a93A8eE91B0DFEFE21DaE2D1b15A'
+const contractAddress = '0x63870f1Fa6549f070d50A67E3E498f9Fef902923'
+
 
 function getLibrary(provider) {
   return new ethers.providers.Web3Provider(provider)
@@ -56,6 +59,7 @@ function App() {
        
           {appName}
           <Mint />
+          <ViewLinks />
          
         
       </header>
@@ -64,21 +68,12 @@ function App() {
             useWeb3React
           }
           supportedChains={[{
-            name: 'zksyncTestnet',
-            chainId: 280,
-            rpcUrl: 'https://testnet.era.zksync.dev',
+            name: 'MantleTestnet',
+            chainId: 5001,
+            rpcUrl: 'https://rpc.testnet.mantle.xyz',
             nativeCurrency: {
-              name: 'ETH',
-              symbol: 'ETH',
-              decimals: 18
-            }},
-            {
-            name: 'zksyncEra',
-            chainId: 280,
-            rpcUrl: 'https://testnet.era.zksync.dev',
-            nativeCurrency: {
-              name: 'ETH',
-              symbol: 'ETH',
+              name: 'MNT',
+              symbol: 'MNT',
               decimals: 18
             }},
             {
@@ -91,15 +86,24 @@ function App() {
               decimals: 18
             }},
             {
-            name: 'MantleTestnet',
-            chainId: 5001,
+            name: 'zksyncTestnet',
+            chainId: 280,
             rpcUrl: 'https://testnet.era.zksync.dev',
             nativeCurrency: {
               name: 'ETH',
               symbol: 'ETH',
               decimals: 18
-            }
-          }]}
+            }},
+            {
+            name: 'zksyncEra',
+            chainId: 280,
+            rpcUrl: 'https://mainnet.era.zksync.dev',
+            nativeCurrency: {
+              name: 'ETH',
+              symbol: 'ETH',
+              decimals: 18
+            }}
+          ]}
           connectors={[{
             title: 'Metamask',
             id: 'metamask',
