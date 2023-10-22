@@ -19,7 +19,10 @@ const ViewLinks = () => {
     const [dataToEncryptHash, setDataToEncryptHash] = useState("")
     const [cipher, setCipher] = useState("")
     const [links, setLinks] = useState([])
+    const [decryptedLinksArray, setDecryptedLinksArray] = useState([])
     const [decryptedData, setDecryptedData] = useState("")
+    const [tokenId, setTokenId] = useState("")
+    const [showingLinks, setShowingLinks] = useState(false)
 
     useEffect(() => {
         if (library) {
@@ -175,46 +178,65 @@ const ViewLinks = () => {
         authSig = await LitJsSdk.checkAndSignAuthMessage({
             chain: 'mantleTestnet'
           });
-        LitJsSdk.decryptToString({
-            evmContractConditions,
-            ciphertext: ciphertext,
-            dataToEncryptHash: dataToEncryptHash,
-            authSig,
-            chain: 'mantleTestnet'
-        },
-        litNodeClient
-        )
-        .then(res => {
-            console.log('decryptedData' + res)
-            setDecryptedData(res)
-        })
-        .catch((error) => console.error(error))
+        try {
+            const decryptData = await LitJsSdk.decryptToString({
+                evmContractConditions,
+                ciphertext: ciphertext,
+                dataToEncryptHash: dataToEncryptHash,
+                authSig,
+                chain: 'mantleTestnet'
+            },
+            litNodeClient
+            )
+           
+            console.log('decryptedData: ' + decryptData)
+            setDecryptedData(decryptData)
+            return decryptData
+        } catch(error) {
+            console.error(error)
+            return null
+        }
     }
 
+    const isTokenAccessible = async(tokenId) => {
+        const isItPublic = await NFTContract.isPublic(tokenId)
+        const ownerOfToken = await NFTContract.ownerOf(tokenId)
+        if(!isItPublic && ownerOfToken != account) {
+            return false
+        } else {
+            return true
+        }
+    }
 
-    const getLinks = async () => {
-        const links = await NFTContract.viewLinks(1)
-        setLinks(links)
-        const link1 = links[0]
-        await fetch(link1)
-            .then(response => {
-                if(!response.ok) {
-                    throw new Error('Network response was not OK ' + response.statusText)
-                }
-                return response.json()
-            })
-            .then(data => {
-                console.log('cipher: ' + data.ciphertext)
-                setCipher(data.ciphertext)
-                console.log('hash: ' + data.dataToEncryptHash)
-                setDataToEncryptHash(data.dataToEncryptHash)
-                alert(cipher)
-            })
-            .catch(error => console.error(error))
+    const getLinks = async (tokenId) => {
+        // const isItPublic = await isTokenAccessible(tokenId)
+        // if(!isItPublic) {
+        //     alert('Token content not public')
+        //     return
+        // }
+        const links = await NFTContract.viewLinks(tokenId)
+        console.log('links' + links)
+        await setLinks(links)
         
-        console.log('cipher ' + cipher)
-        await decryptContent(cipher, dataToEncryptHash, 1)
-        alert(decryptedData)
+        try {
+            const decryptedArray = await Promise.all(
+                links.map(async link => {
+                    const response = await fetch(link)
+                    if(!response.ok) {
+                        throw new Error('Network response was not OK ' + response.statusText)
+                    }
+                    const data = await response.json()
+                    console.log('cipher: ' + data.ciphertext)
+                    console.log('hash: ' + data.dataToEncryptHash)
+                    const decryptedText = await decryptContent(data.ciphertext, data.dataToEncryptHash, tokenId)
+                    return { text: decryptedText}
+                }))
+            console.log('decrypted array: ' + JSON.stringify(decryptedArray))
+            setDecryptedLinksArray(decryptedArray)
+        } catch(error) {
+            console.error(error)
+        }
+      
     }
 
     const makePublic = async () => {
@@ -227,15 +249,49 @@ const ViewLinks = () => {
         alert('Checked in successfully')
     }
 
+    const handleViewSubmit = (event) => {
+        event.preventDefault()
+        getLinks(tokenId)
+        setShowingLinks(true)
+    }
+
 
     return (
         <div className='container'>
             {active ?
                 <>
                     <h1>View Links</h1>
+                    <form onSubmit={handleViewSubmit}>
+                    <div>
+                            <label>
+                            Token ID: 
+                            <input
+                             type="number"
+                             value={tokenId}
+                             onChange={(e) => setTokenId(e.target.value)}
+                             />
+                            </label>
+                    </div>
+                    <button type="submit">Submit</button>
+                    </form>
                     
-                    <button onClick={getLinks}>View Link</button>
-                    
+                    {showingLinks && (
+                        <div style={{ marginTop: '20px'}}>
+                        {decryptedLinksArray.map((item, index) => (
+                            <div
+                             key={index}
+                             style={{
+                                padding: '20px',
+                                border: '1px solid #fff',
+                                borderRadius: '8px',
+                                marginBottom: '10px'
+                             }}
+                             >
+                             <p>{item.text}</p>
+                            </div>
+                        ))}
+                        </div>
+                        )}
                 </>
                 :
                 <>
