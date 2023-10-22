@@ -22,7 +22,7 @@ const Mint = () => {
     useEffect(() => {
         if (library) {
             const abi = dsAbi
-            const contractAddress = '0x516dD68E8D85a93A8eE91B0DFEFE21DaE2D1b15A'
+            const contractAddress = '0xb8D9D7634F6a7194427EE3f64bDfE6a077971a0e'
             setNFTContract(new ethers.Contract(contractAddress, abi, library.getSigner()))
         }
     }, [library])
@@ -56,7 +56,7 @@ const Mint = () => {
           });
         const evmContractConditions = [
           {
-            contractAddress: '0x516dD68E8D85a93A8eE91B0DFEFE21DaE2D1b15A',
+            contractAddress: '0xb8D9D7634F6a7194427EE3f64bDfE6a077971a0e',
             chain: 'zksyncTestnet',
             functionName: 'isPublic',
             functionAbi: {
@@ -138,15 +138,27 @@ const Mint = () => {
         alert('Successfully minted')
     }
 
+    const makePublic = async () => {
+        await NFTContract.setAccess(1, 1)
+        alert('Content now public')
+    }
+
+    const checkIn = async () => {
+        await NFTContract.checkIn(1)
+        alert('Checked in successfully')
+    }
+
 
     return (
         <div className='container'>
             {active ?
                 <>
-                    <h1>Mint NFT</h1>
+                    <h1>Mint & Manage NFT</h1>
                     <p>Your account: {account}</p>
                     <button onClick={mintNFT}>Mint NFT</button>
                     <button onClick={() => addLink('1', 'super secret string')}>Add Link</button>
+                    <button onClick={checkIn}>Check In</button>
+                    <button onClick={makePublic}>Make Public</button>
                 </>
                 :
                 <>
