@@ -21,6 +21,8 @@ const Mint = () => {
     const [ciphertext, setCipherText] = useState("")
     const [nftBalance, setNFTBalance] = useState("")
     const [addingLink, setAddingLink] = useState(false)
+    const [checkingIn, setCheckingIn]  = useState(false)
+    const [settingAccess, setSettingAccess] = useState(false)
     const [tokenId, setTokenId] = useState("")
     const [newText, setNewText] = useState("")
 
@@ -160,13 +162,13 @@ const Mint = () => {
         alert('Successfully minted')
     }
 
-    const makePublic = async () => {
-        await NFTContract.setAccess(1, 1)
+    const makePublic = async (tokenId) => {
+        await NFTContract.setAccess(tokenId, 1)
         alert('Content now public')
     }
 
-    const checkIn = async () => {
-        await NFTContract.checkIn(1)
+    const checkIn = async (tokenId) => {
+        await NFTContract.checkIn(tokenId)
         alert('Checked in successfully')
     }
 
@@ -174,9 +176,18 @@ const Mint = () => {
         setAddingLink(true)
     }
 
+    const checkinForm = () => {
+        setCheckingIn(true)
+    }
+
     const handleLinkSubmit = (event) => {
         event.preventDefault()
         addLink(tokenId, newText)
+    }
+
+    const handleCheckinSubmit = (event) => {
+        event.preventDefault()
+        checkIn(tokenId)
     }
 
 
@@ -189,7 +200,7 @@ const Mint = () => {
                     <p>{nftBalance === 0 ? 'Please Mint Your NFT' : `Your NFT balance: ${nftBalance}` }</p>
                     <button onClick={mintNFT}>Mint NFT</button>
                     <button onClick={addLinkForm}>Add Link</button>
-                    <button onClick={checkIn}>Check In</button>
+                    <button onClick={checkinForm}>Check In</button>
                     <button onClick={makePublic}>Make Public</button>
                     {addingLink && (
                     <form onSubmit={handleLinkSubmit}>
@@ -211,6 +222,26 @@ const Mint = () => {
                              onChange={(e) => setNewText(e.target.value)}
                              ></textarea>
                         </label>
+                        <button type="submit">Submit</button>
+                        </div>
+                    </form>
+
+
+                  )}
+                  {checkingIn && (
+                    <form onSubmit={handleCheckinSubmit}>
+                        <div>
+                            <label>
+                            Token ID: 
+                            <input
+                             type="number"
+                             value={tokenId}
+                             onChange={(e) => setTokenId(e.target.value)}
+                             />
+                            </label>
+                        </div>
+                        <div>
+                            
                         <button type="submit">Submit</button>
                         </div>
                     </form>
