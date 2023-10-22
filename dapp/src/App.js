@@ -105,11 +105,7 @@ function App() {
               decimals: 18
             }}
           ]}
-          connectors={[{
-            title: 'Metamask',
-            id: 'metamask',
-            connector: InjectedConnector,
-          }]}
+          
       />
     </div>
   </Web3ReactProvider>

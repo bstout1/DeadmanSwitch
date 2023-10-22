@@ -203,6 +203,36 @@ const Mint = () => {
         makePublic(tokenId)
     }
 
+    const formStyles = {
+        form: {
+            display: 'flex',
+            flexDirection: 'column',
+            // alignItems: 'flex-start',
+        },
+        formGroup: {
+            marginBottom: '15px',
+        },
+        label: {
+            display: 'block',
+            marginBottom: '5px',
+            fontWeight: 'bold',
+        },
+        input: {
+            width: '100%',
+            padding: '8px',
+            boxSizing: 'border-box',
+        },
+        textarea: {
+            width: '100%',
+            padding: '8px',
+            boxSizing: 'border-box',
+        },
+        button: {
+            alignSelf: 'center',
+        },
+    };
+
+
 
     return (
         <div className='container'>
@@ -216,26 +246,28 @@ const Mint = () => {
                     <button onClick={checkinForm}>Check In</button>
                     <button onClick={setAccessForm}>Make Public</button>
                     {addingLink && (
-                    <form onSubmit={handleLinkSubmit}>
-                        <div>
-                            <label>
+                    <form onSubmit={handleLinkSubmit} style={formStyles.form}>
+                        <div style={formStyles.formGroup}>
+                            <label style={formStyles.label}>
                             Token ID: 
                             <input
                              type="number"
                              value={tokenId}
                              onChange={(e) => setTokenId(e.target.value)}
+                             style={formStyles.input}
                              />
                             </label>
                         </div>
-                        <div>
-                            <label>
+                        <div style={formStyles.formGroup}>
+                            <label style={formStyles.label}>
                             Text: 
                             <textarea
                              value={newText}
                              onChange={(e) => setNewText(e.target.value)}
+                             style={formStyles.textarea}
                              ></textarea>
                         </label>
-                        <button type="submit">Submit</button>
+                        <button type="submit" style={formStyles.button}>Submit</button>
                         </div>
                     </form>
 
