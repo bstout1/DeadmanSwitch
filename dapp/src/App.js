@@ -43,88 +43,7 @@ function App() {
   }
 
 
-  const go = async(tokenId, string) => {
-
-    const litNodeClient = new LitJsSdk.LitNodeClient({
-        litNetwork: 'cayenne',
-      });
-
-    await litNodeClient.connect();
-    let authSig;
-    authSig = await LitJsSdk.checkAndSignAuthMessage({
-        chain: 'zksyncTestnet'
-      });
-    const accs = [
-      {
-        contractAddress: '0x516dD68E8D85a93A8eE91B0DFEFE21DaE2D1b15A',
-        standardContractType: '',
-        chain: 'zksyncTestnet',
-        method: 'isPublic',
-        functionAbi: {
-          "inputs": [
-            {
-              "internalType": "uint256",
-              "name": "_tokenId",
-              "type": "uint256"
-            }
-          ],
-          "name": "isPublic",
-          "outputs": [
-            {
-              "internalType": "bool",
-              "name": "",
-              "type": "bool"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        parameters: [tokenId],
-        returnValueTest: {
-          // comparator: '>=',
-          value: 'true',
-        },
-      },
-    ];
-
-    let res;
-    let encryptedString;
-    let symmetricKey;
-    res = await LitJsSdk.encryptString(string);
-    encryptedString = res.encryptedString;
-    symmetricKey = res.symmetricKey;
-
-    let base64EncryptedString;
-    base64EncryptedString = await LitJsSdk.blobToBase64String(
-        encryptedString
-      );
-    let encryptedSymmetricKey;
-    encryptedSymmetricKey =
-        await litNodeClient.saveEncryptionKey({
-          evmContractConditions: accs,
-          symmetricKey: symmetricKey,
-          authSig: authSig,
-          chain: 'zksyncTestnet',
-        });
-
-    const encryptedData = base64EncryptedString
-    const accessControlConditions = accs 
-
-    const jsonForUpload = JSON.stringify({
-      encryptedData,
-      encryptedSymmetricKey,
-      accessControlConditions,
-    })
-
-    const uuid = Date.now()
-
-    const linkUrl = uploadJSON(jsonForUpload, `${uuid}.json`)
-    //now make call to contract
-
-
-
-
-  }
+ 
 
 
   return (
@@ -137,6 +56,7 @@ function App() {
        
           {appName}
           <Mint />
+         
         
       </header>
       <Web3ReactModal
