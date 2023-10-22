@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@bitiumagency/web3-react-modal": "^6.0.0",
-    "@lit-protocol/lit-node-client": "^3.0.6",
+    "@lit-protocol/lit-node-client": "^3.0.2",
     "@rainbow-me/rainbowkit": "^0.10.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
